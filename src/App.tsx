@@ -9,11 +9,42 @@ import SubCampaign from "./components/subCampaign";
 import { Button, Container, Divider, Grid } from "@mui/material";
 import { useForm } from "react-hook-form";
 
+interface campaignProps {
+  id: number;
+  label: string;
+  count: number;
+  isActive: boolean;
+
+  ads: [
+    {
+      name: string;
+      id: number;
+
+      quantity: number;
+    }
+  ];
+}
+
 function App() {
   const [value, setValue] = React.useState("1");
   const [campaign, setCampaign] = React.useState("");
   const [subCampaigns, setSubCampaigns] = React.useState("");
   const { register, handleSubmit } = useForm();
+  const [subCampaign, setSubCampaign] = React.useState<campaignProps[]>([
+    {
+      id: 0,
+      label: "Chiến dịch con 1",
+      count: 0,
+      isActive: true,
+      ads: [
+        {
+          name: "Quảng cáo 1",
+          id: 1,
+          quantity: 0,
+        },
+      ],
+    },
+  ]);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -98,7 +129,12 @@ function App() {
               <MainCampaign register={register} name={campaign} />
             </TabPanel>
             <TabPanel value="2">
-              <SubCampaign register={register} name={subCampaigns} />
+              <SubCampaign
+                register={register}
+                name={subCampaigns}
+                setSubCampaign={setSubCampaign}
+                subCampaign={subCampaign}
+              />
             </TabPanel>
           </TabContext>
         </Box>

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardHeader,
   Checkbox,
@@ -20,49 +21,54 @@ import AddIcon from "@mui/icons-material/Add";
 import { useMemo, useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import "./style.css";
+import { useForm } from "react-hook-form";
+import EnhancedTable from "./tableCampaign/TableCampaign";
 interface SubCampaignProps {
   register?: any;
   name?: string;
+  subCampaign?: any;
+  setSubCampaign?: any;
 }
 
 const SubCampaign = (props: SubCampaignProps) => {
-  const { register, name } = props;
+  // const { register } = useForm();
+  const { name, register, subCampaign, setSubCampaign } = props;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [tempValue, setTempValue] = useState("Chiến dịch con 1");
   const [checked, setChecked] = useState(true);
-  const [campaign, setCampaign] = useState([
-    {
-      id: 0,
-      label: "Chiến dịch con 1",
-      count: 0,
-      isActive: true,
-    },
-  ]);
+
   const handleAddSubCompaign = () => {
-    setCampaign([
-      ...campaign,
+    setSubCampaign([
+      ...subCampaign,
       {
-        id: campaign.length + 1,
-        label: `Chiến dịch con ${campaign.length + 1}`,
+        id: subCampaign.length + 1,
+        label: `Chiến dịch con ${subCampaign.length + 1}`,
         count: 0,
         isActive: true,
+        ads: [
+          {
+            name: "Quảng cáo 1",
+            id: 1,
+            quantity: 0,
+          },
+        ],
       },
     ]);
-    setSelectedIndex(campaign.length + 1);
+    setSelectedIndex(subCampaign.length + 1);
     setChecked(true);
   };
 
   useMemo(() => {
-    campaign.find((el) =>
+    subCampaign.find((el: any) =>
       el.id === selectedIndex ? setTempValue(el.label) : null
     );
   }, [selectedIndex]);
 
   const handleChange = (e: any) => {
     setTempValue(e.target.value);
-    setCampaign((pre) => {
-      return pre.map((el) =>
+    setSubCampaign((pre: any) => {
+      return pre.map((el: any) =>
         el.id === selectedIndex
           ? {
               ...el,
@@ -78,7 +84,7 @@ const SubCampaign = (props: SubCampaignProps) => {
     index: number
   ) => {
     setSelectedIndex(index);
-    campaign.find((el) => {
+    subCampaign.find((el: any) => {
       if (el.id === index) {
         setTempValue(el.label);
         setChecked(el.isActive);
@@ -88,8 +94,8 @@ const SubCampaign = (props: SubCampaignProps) => {
   };
 
   const handleChangeStatus = (e: any) => {
-    setCampaign((pre) => {
-      return pre.map((preItem) =>
+    setSubCampaign((pre: any) => {
+      return pre.map((preItem: any) =>
         preItem.id === selectedIndex
           ? {
               ...preItem,
@@ -128,7 +134,7 @@ const SubCampaign = (props: SubCampaignProps) => {
             >
               <AddIcon />
             </Fab>
-            {Array.from(campaign).map((el, index) => (
+            {Array.from(subCampaign).map((el: any, index) => (
               // <Grid item md={24} key={index}>
               <ListItemButton
                 selected={selectedIndex === el.id}
@@ -183,10 +189,10 @@ const SubCampaign = (props: SubCampaignProps) => {
               required
               variant="standard"
               fullWidth
-              // value={tempValue}
-              // onChange={handleChange}
-              helperText={name}
+              value={tempValue}
               {...register("subCampaigns")}
+              onChange={handleChange}
+              helperText={name}
               size="small"
               className="MuiInputLabel"
             />
@@ -205,23 +211,12 @@ const SubCampaign = (props: SubCampaignProps) => {
             />
           </Grid>
         </Grid>
-        <Container sx={{ padding: 0, margin: 0, height: "auto" }}>
-          <Grid container>
-            <Grid item maxWidth="100%">
-              <FormLabel
-                sx={{ fontSize: 25, fontWeight: 500 }}
-                style={{ padding: "16px" }}
-                className="aa"
-              >
-                Danh sách quảng cáo
-              </FormLabel>
-            </Grid>
-            <Grid>
-              
-            </Grid>
-          </Grid>
-
-        </Container>
+        <EnhancedTable
+          subCampaign={subCampaign}
+          setSubCampaign={setSubCampaign}
+          register={register}
+          selectedIndex={selectedIndex}
+        />
       </Grid>
     </Box>
   );
